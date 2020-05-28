@@ -1,2 +1,2 @@
 # BayLime
- bayesian lime
+ simply run the test.py
