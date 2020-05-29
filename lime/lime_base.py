@@ -219,7 +219,10 @@ class LimeBase(object):
         prediction_score = easy_model.score(
             neighborhood_data[:, used_features],
             labels_column, sample_weight=weights)
-        if model_regressor == 'Bay_non_info_prior' or model_regressor == 'Bay_info_prior':
+        
+        if model_regressor == 'Bay_non_info_prior':
+            print('the alpha and lambda are {} and {}').format(easy_model.alpha_,easy_model.lambda_)
+        if model_regressor == 'Bay_info_prior':
             print('the alpha and lambda are {} and {}').format(easy_model.alpha_,easy_model.lambda_)
 
         local_pred = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1))
