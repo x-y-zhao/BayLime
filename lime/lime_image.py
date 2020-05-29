@@ -76,7 +76,7 @@ class ImageExplanation(object):
                 mask[segments == f] = 1
             return temp, mask
         else:
-            for f, w,variance in exp[:num_features]:
+            for f, w, variance in exp[:num_features]:
                 if np.abs(w) < min_weight:
                     continue
                 c = 0 if w < 0 else 1
