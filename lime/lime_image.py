@@ -84,6 +84,7 @@ class ImageExplanation(object):
                 temp[segments == f] = image[segments == f].copy()
                 temp[segments == f, c] = np.max(image)
                 print(variance)
+                print(w)
             return temp, mask
 
 
