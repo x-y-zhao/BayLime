@@ -3,7 +3,7 @@ Contains abstract functionality for learning locally linear sparse model.
 """
 import numpy as np
 import scipy as sp
-from sklearn.linear_model import Ridge, lars_path,ARDRegression
+from sklearn.linear_model import Ridge, lars_path,BayesianRidge,modified_sklearn_BayesianRidge
 from sklearn.utils import check_random_state
 
 
@@ -141,7 +141,7 @@ class LimeBase(object):
                                    label,
                                    num_features,
                                    feature_selection='auto',
-                                   model_regressor=None):
+                                   model_regressor='non_Bay'):
         """Takes perturbed data, labels and distances, returns explanation.
 
         Args:
@@ -167,6 +167,9 @@ class LimeBase(object):
                 Defaults to Ridge regression if None. Must have
                 model_regressor.coef_ and 'sample_weight' as a parameter
                 to model_regressor.fit()
+                XZ: change default to 'non_Bay'
+                'Bay_non_info_prior' uses sklearn BayesianRidge
+                'Bay_info_prior' uses XZ modified sklearn BayesianRidge
 
         Returns:
             (intercept, exp, score, local_pred):
@@ -185,9 +188,30 @@ class LimeBase(object):
                                                weights,
                                                num_features,
                                                feature_selection)
-        if model_regressor is None:
-            #model_regressor = Ridge(alpha=1,fit_intercept=True,random_state=self.random_state)
-            model_regressor=ARDRegression(fit_intercept=True)
+        if model_regressor == 'non_Bay':
+            model_regressor = Ridge(alpha=1,fit_intercept=True,random_state=self.random_state)
+            print('using non_Bay option for model regressor')
+        
+        #added by XZ
+        if model_regressor == 'Bay_non_info_prior':
+            #all default args
+            model_regressor=BayesianRidge(fit_intercept=True,
+                                         n_iter=300, tol=0.001, 
+                                         alpha_1=1e-06, alpha_2=1e-06, 
+                                         lambda_1=1e-06, lambda_2=1e-06, 
+                                         alpha_init=None, lambda_init=None)
+            print('using Bay_non_info_prior option for model regressor')
+        
+        #added by XZ
+        if model_regressor == 'Bay_info_prior':
+            print('using Bay_info_prior option for model regressor')
+            model_regressor=modified_sklearn_BayesianRidge(fit_intercept=True,
+                                         n_iter=0, tol=0.001,  
+                                         alpha_init=0.1, lambda_init=0.1)
+        #XZ: we set the alpha_init and lambda_init to play with different priors
+        #XZ: TODO read those parameters from config files
+            
+        
         easy_model = model_regressor
         easy_model.fit(neighborhood_data[:, used_features],
                        labels_column, sample_weight=weights)

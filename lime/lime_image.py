@@ -132,7 +132,7 @@ class LimeImageExplainer(object):
                          batch_size=10,
                          segmentation_fn=None,
                          distance_metric='cosine',
-                         model_regressor=None,
+                         model_regressor='non_Bay',
                          random_seed=None):
         """Generates explanations for a prediction.
 
