@@ -3,7 +3,8 @@ Contains abstract functionality for learning locally linear sparse model.
 """
 import numpy as np
 import scipy as sp
-from sklearn.linear_model import Ridge, lars_path,BayesianRidge,modified_sklearn_BayesianRidge
+from sklearn.linear_model import Ridge, lars_path,BayesianRidge
+from sklearn.linear_model.modified_sklearn_BayesianRidge import BayesianRidge_inf_prior
 from sklearn.utils import check_random_state
 
 
@@ -205,7 +206,7 @@ class LimeBase(object):
         #added by XZ
         if model_regressor == 'Bay_info_prior':
             print('using Bay_info_prior option for model regressor')
-            model_regressor=modified_sklearn_BayesianRidge(fit_intercept=True,
+            model_regressor=BayesianRidge_inf_prior(fit_intercept=True,
                                          n_iter=0, tol=0.001,  
                                          alpha_init=0.1, lambda_init=0.1)
         #XZ: we set the alpha_init and lambda_init to play with different priors
