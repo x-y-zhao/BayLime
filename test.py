@@ -39,6 +39,7 @@ images = transform_img_fn([os.path.join('data','frog.jpg')])
 # I'm dividing by 2 and adding 0.5 because of
 # how this Inception represents images
 plt.imshow(images[0] / 2 + 0.5)
+plt.show()
 preds = inet_model.predict(images)
 for x in decode_predictions(preds)[0]:
     print(x)
@@ -47,18 +48,21 @@ for x in decode_predictions(preds)[0]:
     
 
 
-explainer = lime_image.LimeImageExplainer()#kernel_width=0.1
+explainer = lime_image.LimeImageExplainer(feature_selection='auto')#kernel_width=0.1
 
 # Hide color is the color for a superpixel turned OFF. Alternatively, if it is NONE, the superpixel will be replaced by the average of its pixels
 explanation = explainer.explain_instance(images[0], inet_model.predict,
                                          top_labels=5, hide_color=0, 
-                                         num_samples=1000,model_regressor='non_Bay')
+                                         num_samples=1000,model_regressor='Bay_non_info_prior')#'non_Bay'
 
-#temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=True, num_features=5, hide_rest=True)
-#plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
+temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=True, num_features=5, hide_rest=True)
+plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
+plt.show()
 
-# temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=True, num_features=5, hide_rest=False)
-# plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
+temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=True, num_features=5, hide_rest=False)
+plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
+plt.show()
 
 temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=False, num_features=10, hide_rest=False)
 plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
+plt.show()
