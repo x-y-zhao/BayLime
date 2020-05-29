@@ -189,13 +189,13 @@ class LimeBase(object):
                                                num_features,
                                                feature_selection)
         if model_regressor == 'non_Bay':
-            model_regressor = Ridge(alpha=1,fit_intercept=True,random_state=self.random_state)
+            model_reg = Ridge(alpha=1,fit_intercept=True,random_state=self.random_state)
             print('using non_Bay option for model regressor')
         
         #added by XZ
         if model_regressor == 'Bay_non_info_prior':
             #all default args
-            model_regressor=BayesianRidge(fit_intercept=True,
+            model_reg=BayesianRidge(fit_intercept=True,
                                          n_iter=300, tol=0.001, 
                                          alpha_1=1e-06, alpha_2=1e-06, 
                                          lambda_1=1e-06, lambda_2=1e-06, 
@@ -206,30 +206,38 @@ class LimeBase(object):
         #added by XZ
         if model_regressor == 'Bay_info_prior':
             print('using Bay_info_prior option for model regressor')
-            model_regressor=BayesianRidge_inf_prior(fit_intercept=True,
+            model_reg=BayesianRidge_inf_prior(fit_intercept=True,
                                          n_iter=0, tol=0.001,  
                                          alpha_init=1000, lambda_init=1000)
         #XZ: we set the alpha_init and lambda_init to play with different priors
         #XZ: TODO read those parameters from config files
             
         
-        easy_model = model_regressor
+        easy_model = model_reg
         easy_model.fit(neighborhood_data[:, used_features],
                        labels_column, sample_weight=weights)
         prediction_score = easy_model.score(
             neighborhood_data[:, used_features],
             labels_column, sample_weight=weights)
         
-        if model_regressor == 'Bay_non_info_prior':
+       
+        if model_regressor == 'non_Bay':
+            #print('the alpha and lambda are {} and {}').format(easy_model.alpha_,easy_model.lambda_)
+            local_pred = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1))
+            local_std = 0
+            print('Prediction_local_mean', local_pred,)
+            print('Prediction_local_std', local_std,)
+        
+        if model_regressor == 'Bay_info_prior' or model_regressor == 'Bay_non_info_prior':
             print('the alpha and lambda are {} and {}').format(easy_model.alpha_,easy_model.lambda_)
-        if model_regressor == 'Bay_info_prior':
-            print('the alpha and lambda are {} and {}').format(easy_model.alpha_,easy_model.lambda_)
-
-        local_pred = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1))
-
+            local_pred, local_std = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1))
+            print('Prediction_local_mean', local_pred,)
+            print('Prediction_local_std', local_std,)
+            
         if self.verbose:
             print('Intercept', easy_model.intercept_)
-            print('Prediction_local', local_pred,)
+            print('Prediction_local_mean', local_pred,)
+            print('Prediction_local_std', local_std,)
             print('Right:', neighborhood_labels[0, label])
         return (easy_model.intercept_,
                 sorted(zip(used_features, easy_model.coef_),
