@@ -236,7 +236,28 @@ class LimeBase(object):
             print('Prediction_local_mean', local_pred,)
             print('Prediction_local_std', local_std,)
             print('Right:', neighborhood_labels[0, label])
-        return (easy_model.intercept_,
-                sorted(zip(used_features, easy_model.coef_),
-                       key=lambda x: np.abs(x[1]), reverse=True),
-                prediction_score, local_pred)
+        if model_regressor == 'non_Bay':
+            return (easy_model.intercept_,
+                    sorted(zip(used_features, easy_model.coef_,np.zeros(len(easy_model.coef_))),
+                           key=lambda x: np.abs(x[1]),
+                           reverse=True),
+                    prediction_score, local_pred)
+        else:
+            n_=len(easy_model.coef_)
+            variance=np.zeros(n_)
+            i=0
+            while i<n_:
+                variance[i]=easy_model.sigma_[i,i]
+                i=i+1
+        
+            return (easy_model.intercept_,
+                    sorted(zip(used_features, easy_model.coef_,variance),
+                       key=lambda x: np.abs(x[1]),
+                       reverse=True),
+                    prediction_score, local_pred)
+    
+    
+    
+    
+    
+    
