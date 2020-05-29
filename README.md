@@ -1,6 +1,6 @@
 # BayLime (Bayesian Lime)
 
-
+The gist of BayLime is to allow users to embed *informative* prior knowledge when interpreting AI using Lime.
 
 I have modified the Lime by adding more options to the args *model_regressor*.
 
