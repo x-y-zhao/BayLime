@@ -221,7 +221,6 @@ class LimeBase(object):
             labels_column, sample_weight=weights)
         
         if model_regressor == 'non_Bay':
-            #print('the alpha and lambda are {} and {}').format(easy_model.alpha_,easy_model.lambda_)
             local_pred = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1))
             local_std = 0
             
@@ -229,7 +228,7 @@ class LimeBase(object):
         if model_regressor == 'Bay_info_prior' or model_regressor == 'Bay_non_info_prior':
             print('the alpha is',easy_model.alpha_)
             print('the lambda is',easy_model.lambda_)
-            local_pred, local_std = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1))
+            local_pred, local_std = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1),return_std=True)
             
         print('Prediction_local_mean', local_pred)
         print('Prediction_local_std', local_std)
