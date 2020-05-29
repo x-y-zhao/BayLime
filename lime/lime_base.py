@@ -207,7 +207,7 @@ class LimeBase(object):
             print('using Bay_info_prior option for model regressor')
             model_regressor=BayesianRidge_inf_prior(fit_intercept=True,
                                          n_iter=0, tol=0.001,  
-                                         alpha_init=0.01, lambda_init=0.01)
+                                         alpha_init=10, lambda_init=10)
         #XZ: we set the alpha_init and lambda_init to play with different priors
         #XZ: TODO read those parameters from config files
             
