@@ -1,4 +1,5 @@
 # BayLime
+<<<<<<< HEAD
  bayesian lime
 
 
@@ -15,3 +16,6 @@ To find out where the folder is, simply run:
 
 from sklearn import linear_model
 print(linear_model.__file__)
+=======
+ simply run the test.py
+>>>>>>> 35ac1ecaaa6f9e260c44759498399375a670add2
