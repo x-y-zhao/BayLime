@@ -9,7 +9,9 @@ Now when calling the explainer.explain_instance() API of Lime:
 2. model_regressor='Bay_non_info_prior' uses sklearn BayesianRidge regressor with all default args
 3. model_regressor='Bay_info_prior' uses XZ modified sklearn BayesianRidge regressor, 
 
-The point 3 above requires to copy-paste the modified_sklearn_BayesianRidge.py file into your local sklearn.linear_model folder.
+In the point 3 above, essentially I did a new function to replace the sklearn BayesianRidge with BayesianRidge_inf_prior. Now it does not allow BayesianRidge to automatically do model selection for finding the optimum alpha and lambda to let the data speak for themselves, rather we specify them manually as informative priors from humans.
+
+Te point 3 requires to copy-paste the modified_sklearn_BayesianRidge.py file into your local sklearn.linear_model folder.
 
 To find out where the folder is, simply run:
 
@@ -18,7 +20,7 @@ from sklearn import linear_model
 print(linear_model.__file__)
 ```
 
-(Essentially I did a new function to replace the sklearn BayesianRidge withBayesianRidge_inf_prior. Basically it does not allow BayesianRidgeto do automatic model selection for finding optimum alpha and lambda to let the data speak for themselves, rather we specify them manually as informative priors from humans.)
+
 
 Then, simply run the test.py. 
 
