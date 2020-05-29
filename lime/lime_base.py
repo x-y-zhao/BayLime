@@ -230,8 +230,7 @@ class LimeBase(object):
             print('the lambda is',easy_model.lambda_)
             local_pred, local_std = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1),return_std=True)
             
-        print('Prediction_local_mean', local_pred)
-        print('Prediction_local_std', local_std)
+        
         if self.verbose:
             print('Intercept', easy_model.intercept_)
             print('Prediction_local_mean', local_pred,)
