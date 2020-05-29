@@ -8,7 +8,11 @@ Created on Fri May 29 09:26:54 2020
 """
 Various bayesian regression
 XZ did a new function to replace the sklearn BayesianRidge with 
-BayesianRidge_inf_prior
+BayesianRidge_inf_prior. Basically it does not allow BayesianRidge
+to do automatic model selection for finding optimum alpha and lambda
+to let ``the data speak for themselves'', rather we specify them manually
+as informative priors from humans.
+
 """
 
 

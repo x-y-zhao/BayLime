@@ -4,7 +4,7 @@ Contains abstract functionality for learning locally linear sparse model.
 import numpy as np
 import scipy as sp
 from sklearn.linear_model import Ridge, lars_path,BayesianRidge
-from sklearn.linear_model.modified_sklearn_BayesianRidge import BayesianRidge_inf_prior
+from sklearn.linear_model import BayesianRidge_inf_prior
 from sklearn.utils import check_random_state
 
 
