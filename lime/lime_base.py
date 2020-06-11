@@ -6,6 +6,7 @@ import scipy as sp
 from sklearn.linear_model import Ridge, lars_path,BayesianRidge
 from sklearn.linear_model.modified_sklearn_BayesianRidge import BayesianRidge_inf_prior
 from sklearn.utils import check_random_state
+import csv
 
 class LimeBase(object):
     """Class for learning a locally linear sparse model from perturbed data"""
@@ -188,6 +189,10 @@ class LimeBase(object):
                                                weights,
                                                num_features,
                                                feature_selection)
+        #added by XZ
+        # print('Used features:')
+        # print(used_features)
+        
         if model_regressor == 'non_Bay':
             model_reg = Ridge(alpha=1,fit_intercept=True,random_state=self.random_state)
             print('using non_Bay option for model regressor')
@@ -196,7 +201,8 @@ class LimeBase(object):
         if model_regressor == 'Bay_non_info_prior':
             #all default args
             model_reg=BayesianRidge(fit_intercept=True,
-                                         n_iter=300, tol=0.001, 
+                                         n_iter=3000, tol=0.0001,
+                                         verbose=True,
                                          alpha_1=1e-06, alpha_2=1e-06, 
                                          lambda_1=1e-06, lambda_2=1e-06, 
                                          alpha_init=None, lambda_init=None)
@@ -205,10 +211,19 @@ class LimeBase(object):
         
         #added by XZ
         if model_regressor == 'Bay_info_prior':
+            alpha_init=1
+            lambda_init=1
+            with open('./configure.csv') as csv_file:
+                csv_reader=csv.reader(csv_file)
+                line_count = 0
+                for row in csv_reader:
+                    if line_count == 1:
+                        alpha_init=float(row[0])
+                        lambda_init=float(row[1])
+                    line_count=line_count+1
             print('using Bay_info_prior option for model regressor')
-            model_reg=BayesianRidge_inf_prior(fit_intercept=True,
-                                         n_iter=0, tol=0.001,  
-                                         alpha_init=1000, lambda_init=1000)
+            model_reg=BayesianRidge_inf_prior(fit_intercept=True,n_iter=0, tol=0.001,  
+                                         alpha_init=alpha_init, lambda_init=lambda_init)
         #XZ: we set the alpha_init and lambda_init to play with different priors
         #XZ: TODO read those parameters from config files
             
@@ -228,6 +243,7 @@ class LimeBase(object):
         if model_regressor == 'Bay_info_prior' or model_regressor == 'Bay_non_info_prior':
             print('the alpha is',easy_model.alpha_)
             print('the lambda is',easy_model.lambda_)
+            print('the regulation term lambda/alpha is', easy_model.lambda_/easy_model.alpha_)
             local_pred, local_std = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1),return_std=True)
             
         

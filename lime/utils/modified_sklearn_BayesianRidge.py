@@ -286,6 +286,7 @@ class BayesianRidge_inf_prior(RegressorMixin, LinearModel):
 
         # return regularization parameters and corresponding posterior mean,
         # log marginal likelihood and posterior covariance
+        
         #XZ: just use the inital alpha and lambda do the update..
         self.alpha_ = alpha_
         self.lambda_ = lambda_

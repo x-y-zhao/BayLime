@@ -3,14 +3,14 @@ Functions for explaining classifiers that use Image data.
 """
 import copy
 from functools import partial
-
+import matplotlib.pyplot as plt
 import numpy as np
 import sklearn
 import sklearn.preprocessing
 from sklearn.utils import check_random_state
 from skimage.color import gray2rgb
 from tqdm.auto import tqdm
-
+from skimage.segmentation import mark_boundaries
 
 from . import lime_base
 from .wrappers.scikit_image import SegmentationAlgorithm
@@ -76,15 +76,17 @@ class ImageExplanation(object):
                 mask[segments == f] = 1
             return temp, mask
         else:
-            for f, w, variance in exp[:num_features]:
+            for f, w, variance in exp[:num_features]:#variance added by XZ
                 if np.abs(w) < min_weight:
                     continue
                 c = 0 if w < 0 else 1
                 mask[segments == f] = -1 if w < 0 else 1
                 temp[segments == f] = image[segments == f].copy()
                 temp[segments == f, c] = np.max(image)
-                print(variance)
-                print(w)
+                ##added by xz to print out information
+                print('For feature of segment {0}'.format(f))
+                print('The mean of the posterior coficent {0}'.format(w))
+                print('The variance of the posterior coficent {0}'.format(variance))
             return temp, mask
 
 
@@ -177,14 +179,19 @@ class LimeImageExplainer(object):
             random_seed = self.random_state.randint(0, high=1000)
 
         if segmentation_fn is None:
-            segmentation_fn = SegmentationAlgorithm('quickshift', kernel_size=4,
+            segmentation_fn = SegmentationAlgorithm('slic', kernel_size=4,
                                                     max_dist=200, ratio=0.2,
-                                                    random_seed=random_seed)
+                                                    random_seed=random_seed)#XZ adde in n_segments=30
         try:
             segments = segmentation_fn(image)
         except ValueError as e:
             raise e
-
+        
+        #Added by XZ, show all the segments
+        plt.imshow(mark_boundaries(image / 2 + 0.5, segments))
+        plt.show()
+        #End
+        
         fudged_image = image.copy()
         if hide_color is None:
             for x in np.unique(segments):

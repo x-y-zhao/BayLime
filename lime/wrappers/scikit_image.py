@@ -22,7 +22,7 @@ class BaseWrapper(object):
 
         self.target_fn = target_fn
         self.target_params = target_params
-
+        
     def _check_params(self, parameters):
         """Checks for mistakes in 'parameters'
 
@@ -67,7 +67,7 @@ class BaseWrapper(object):
                 for the target function
         """
         self._check_params(params)
-        self.target_params = params
+        self.target_params = params 
 
     def filter_params(self, fn, override=None):
         """Filters `target_params` and return those in `fn`'s arguments.
