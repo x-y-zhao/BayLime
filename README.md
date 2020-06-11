@@ -24,3 +24,5 @@ print(linear_model.__file__)
 
 Then, simply run the test.py. 
 
+(Tested with Python version 3.7.3 and scikit-learn version 0.22.1)
+

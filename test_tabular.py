@@ -57,7 +57,7 @@ explainer = lime.lime_tabular.LimeTabularExplainer(train, feature_names=boston.f
 
 
 #generate an explanation for testing..
-i = 13
+i = 3
 #use rf.predict_proba for classfication 
 exp = explainer.explain_instance(test[i], rf.predict,#num_features=13,
                                  model_regressor='Bay_non_info_prior',
