@@ -189,9 +189,7 @@ class LimeBase(object):
                                                weights,
                                                num_features,
                                                feature_selection)
-        #added by XZ
-        # print('Used features:')
-        # print(used_features)
+        
         
         if model_regressor == 'non_Bay':
             model_reg = Ridge(alpha=1,fit_intercept=True,random_state=self.random_state)
@@ -210,6 +208,7 @@ class LimeBase(object):
             
         
         #added by XZ
+        #XZ: read those parameters from config files
         if model_regressor == 'Bay_info_prior':
             alpha_init=1
             lambda_init=1
@@ -225,7 +224,7 @@ class LimeBase(object):
             model_reg=BayesianRidge_inf_prior(fit_intercept=True,n_iter=0, tol=0.001,  
                                          alpha_init=alpha_init, lambda_init=lambda_init)
         #XZ: we set the alpha_init and lambda_init to play with different priors
-        #XZ: TODO read those parameters from config files
+        
             
         
         easy_model = model_reg

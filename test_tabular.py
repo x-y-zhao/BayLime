@@ -61,7 +61,7 @@ i = 3
 #use rf.predict_proba for classfication 
 exp = explainer.explain_instance(test[i], rf.predict,#num_features=13,
                                  model_regressor='Bay_non_info_prior',
-                                 num_samples=1000,
+                                 num_samples=100,
                                  #labels=labels_test[i],
                                  )#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior'
 
@@ -69,29 +69,29 @@ exp.show_in_notebook(show_table=True)
 fig = exp.as_pyplot_figure(label=1)
 
 
-# alpha_init=1
-# lambda_init=1
-# with open('./configure.csv') as csv_file:
-#     csv_reader=csv.reader(csv_file)
-#     line_count = 0
-#     for row in csv_reader:
-#         if line_count == 1:
-#             alpha_init=float(row[0])
-#             lambda_init=float(row[1])
-#         line_count=line_count+1
+alpha_init=1
+lambda_init=1
+with open('./configure.csv') as csv_file:
+    csv_reader=csv.reader(csv_file)
+    line_count = 0
+    for row in csv_reader:
+        if line_count == 1:
+            alpha_init=float(row[0])
+            lambda_init=float(row[1])
+        line_count=line_count+1
 
-# exp = explainer.explain_instance(test[i], rf.predict,#num_features=13,
-#                                  model_regressor='Bay_info_prior',
-#                                  num_samples=1000,
-#                                  #labels=labels_test[i],
-#                                  top_labels=2)#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior'
+exp = explainer.explain_instance(test[i], rf.predict,#num_features=13,
+                                  model_regressor='Bay_info_prior',
+                                  num_samples=100,
+                                  #labels=labels_test[i],
+                                  top_labels=2)#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior'
   
-# exp=calculate_posteriors.get_posterior(exp,hyper_para_alpha=alpha_init, hyper_para_lambda=lambda_init,
-#                                        num_samples=1000,label=1)
+exp=calculate_posteriors.get_posterior(exp,hyper_para_alpha=alpha_init, hyper_para_lambda=lambda_init,
+                                        label=1)
 
-# exp.show_in_notebook(show_table=True)
-# #print(exp.as_list())
-# fig = exp.as_pyplot_figure(label=1)
+#exp.show_in_notebook(show_table=True)
+#print(exp.as_list())
+fig = exp.as_pyplot_figure(label=1)
 
 
 

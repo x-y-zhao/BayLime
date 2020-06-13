@@ -467,10 +467,10 @@ class LimeTabularExplainer(object):
             ret_exp.local_exp[0] = [(i, -1 * j,variance) for i, j,variance in ret_exp.local_exp[1]]
             #variance added by XZ: not being used for now...
             #XZ: Also need to do this for other ``mode'' parameters..
-        for label in labels:
-            for i, j, variance in ret_exp.local_exp[label]:
-                print('For the label {0} and feature index {1}:'.format(label,i))
-                print('the mean is {0} and the variance is {1}'.format(j,variance))
+        # for label in labels:
+        #     for i, j, variance in ret_exp.local_exp[label]:
+        #         print('For the label {0} and feature index {1}:'.format(label,i))
+        #         print('the mean is {0} and the variance is {1}'.format(j,variance))
                 
         return ret_exp
 

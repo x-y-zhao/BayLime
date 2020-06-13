@@ -2,14 +2,14 @@
 """
 Created on Tue Jun  9 12:01:26 2020
 
-@author: xz45
+@author: Xingyu Zhao
 """
 
 import pandas as pd
 import numpy as np
 
 # this function will be relocated to somefile... 
-def get_posterior(exp, hyper_para_alpha, hyper_para_lambda,num_samples,label=1):
+def get_posterior(exp, hyper_para_alpha, hyper_para_lambda,label=1):
     '''
     Added by XZ to calculate posteriors when mu0 is non zero
     Parameters
@@ -17,7 +17,6 @@ def get_posterior(exp, hyper_para_alpha, hyper_para_lambda,num_samples,label=1):
     exp : a lime explaination instance
     hyper_para_alpha : the alpha used in the BayesianLinearRegression
     hyper_para_lambda : the lambda used in the BayesianLinearRegression
-    num_samples : number of data points used in the BayesianLinearRegression.
     label: which label to explain..
     Returns
     -------
@@ -26,20 +25,26 @@ def get_posterior(exp, hyper_para_alpha, hyper_para_lambda,num_samples,label=1):
     '''
     #read from the prior knowledge repo
     w=pd.read_csv(r'.\data\prior_knowledge.csv')
-    temp_list=exp.as_list(label=label)
+   
     
-    # a new list of tuple
-    new_list_with_feature_names=[]
+    feature_name_list = exp.as_list(label=label)
+        
+    feature_id_list = [(x[0], float(x[1]),float(x[2])) for x in exp.local_exp[label]]
+    
+    temp_list=[feature_id_list[i]+feature_name_list[i] for i in range(0, len(feature_id_list))] 
+    
+    # two new lists of tuple
+    #new_list_with_feature_names=[]
     new_list_with_feature_index=[]
     #print((temp_list))
     for x in temp_list:
         for col in w.columns:
-            if x[0]==col:
-                t_=(hyper_para_lambda/(hyper_para_lambda+hyper_para_alpha*num_samples))*w[col].mean()+x[1]
-                new_list_with_feature_names.append((col,t_))
+            if x[3]==col:
+                t_=(hyper_para_lambda*x[2])*w[col].mean()+x[1]
+                new_list_with_feature_index.append((x[0],t_,x[2]))
     
-    for index, x in enumerate(new_list_with_feature_names):
-        new_list_with_feature_index.append((exp.local_exp[label][index][0],x[1]))
+    # for index, x in enumerate(new_list_with_feature_names):
+    #     new_list_with_feature_index.append((exp.local_exp[label][index][0],x[1],x[2]))
     
     
     #print(new_list_with_feature_names)
