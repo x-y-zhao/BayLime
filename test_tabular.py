@@ -69,9 +69,19 @@ exp.show_in_notebook(show_table=True)
 fig = exp.as_pyplot_figure(label=1)
 
 
+
+
+exp = explainer.explain_instance(test[i], rf.predict,#num_features=13,
+                                  model_regressor='BayesianRidge_inf_prior_fit_alpha',
+                                  num_samples=100,
+                                  #labels=labels_test[i],
+                                  top_labels=2)
+#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior', 'BayesianRidge_inf_prior_fit_alpha'
+  
+
 alpha_init=1
 lambda_init=1
-with open('./configure.csv') as csv_file:
+with open('./posterior_configure.csv') as csv_file:
     csv_reader=csv.reader(csv_file)
     line_count = 0
     for row in csv_reader:
@@ -80,12 +90,6 @@ with open('./configure.csv') as csv_file:
             lambda_init=float(row[1])
         line_count=line_count+1
 
-exp = explainer.explain_instance(test[i], rf.predict,#num_features=13,
-                                  model_regressor='Bay_info_prior',
-                                  num_samples=100,
-                                  #labels=labels_test[i],
-                                  top_labels=2)#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior'
-  
 exp=calculate_posteriors.get_posterior(exp,hyper_para_alpha=alpha_init, hyper_para_lambda=lambda_init,
                                         label=1)
 

@@ -4,7 +4,7 @@ Contains abstract functionality for learning locally linear sparse model.
 import numpy as np
 import scipy as sp
 from sklearn.linear_model import Ridge, lars_path,BayesianRidge
-from sklearn.linear_model.modified_sklearn_BayesianRidge import BayesianRidge_inf_prior
+from sklearn.linear_model.modified_sklearn_BayesianRidge import BayesianRidge_inf_prior,BayesianRidge_inf_prior_fit_alpha
 from sklearn.utils import check_random_state
 import csv
 
@@ -199,7 +199,7 @@ class LimeBase(object):
         if model_regressor == 'Bay_non_info_prior':
             #all default args
             model_reg=BayesianRidge(fit_intercept=True,
-                                         n_iter=3000, tol=0.0001,
+                                         n_iter=1000, tol=0.0001,
                                          verbose=True,
                                          alpha_1=1e-06, alpha_2=1e-06, 
                                          lambda_1=1e-06, lambda_2=1e-06, 
@@ -221,11 +221,27 @@ class LimeBase(object):
                         lambda_init=float(row[1])
                     line_count=line_count+1
             print('using Bay_info_prior option for model regressor')
-            model_reg=BayesianRidge_inf_prior(fit_intercept=True,n_iter=0, tol=0.001,  
+            model_reg=BayesianRidge_inf_prior(fit_intercept=True,n_iter=0, tol=0.0001,  
                                          alpha_init=alpha_init, lambda_init=lambda_init)
         #XZ: we set the alpha_init and lambda_init to play with different priors
         
-            
+        #added by XZ
+        #XZ: read those parameters from config files
+        if model_regressor == 'BayesianRidge_inf_prior_fit_alpha':
+            lambda_init=1
+            with open('./configure.csv') as csv_file:
+                csv_reader=csv.reader(csv_file)
+                line_count = 0
+                for row in csv_reader:
+                    if line_count == 1:
+                        lambda_init=float(row[1])
+                    line_count=line_count+1
+            print('using Bay_info_prior_fixed_lambda_fit_alpha option for model regressor')
+            model_reg=BayesianRidge_inf_prior_fit_alpha(fit_intercept=True,n_iter=1000, tol=0.0001,  
+                                         lambda_init=lambda_init,verbose=True)
+        #XZ: we set the alpha_init and lambda_init to play with different priors
+        
+        
         
         easy_model = model_reg
         easy_model.fit(neighborhood_data[:, used_features],
@@ -239,16 +255,19 @@ class LimeBase(object):
             local_std = 0
             
         
-        if model_regressor == 'Bay_info_prior' or model_regressor == 'Bay_non_info_prior':
+        if model_regressor == 'Bay_info_prior' or model_regressor == 'Bay_non_info_prior' or model_regressor == 'BayesianRidge_inf_prior_fit_alpha':
             print('the alpha is',easy_model.alpha_)
             print('the lambda is',easy_model.lambda_)
             print('the regulation term lambda/alpha is', easy_model.lambda_/easy_model.alpha_)
             local_pred, local_std = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1),return_std=True)
-            
+            with open('./posterior_configure.csv','w',newline='') as result_file:
+                wr = csv.writer(result_file,delimiter=',')
+                wr.writerows([['alpha','lambda']])
+                wr.writerows([[easy_model.alpha_,easy_model.lambda_]])
         
         if self.verbose:
             print('Intercept', easy_model.intercept_)
-            print('Prediction_local_mean', local_pred,)
+            print('Prediction_local_mean', local_pred)
             print('Prediction_local_std', local_std,)
             print('Right:', neighborhood_labels[0, label])
         if model_regressor == 'non_Bay':
