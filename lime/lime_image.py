@@ -85,8 +85,8 @@ class ImageExplanation(object):
                 temp[segments == f, c] = np.max(image)
                 ##added by xz to print out information
                 print('For feature of segment {0}'.format(f))
-                print('The mean of the posterior coficent {0}'.format(w))
-                print('The variance of the posterior coficent {0}'.format(variance))
+                print('The mean of the (posterior) coefficient {0}'.format(w))
+                print('The variance of the (posterior) coefficient {0}'.format(variance))
             return temp, mask
 
 
@@ -188,6 +188,7 @@ class LimeImageExplainer(object):
             raise e
         
         #Added by XZ, show all the segments
+        print('the number of features: {0}'.format(np.amax(segments)))
         plt.imshow(mark_boundaries(image / 2 + 0.5, segments))
         plt.show()
         #End
