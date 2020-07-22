@@ -17,6 +17,8 @@ import numpy as np
 from skimage.segmentation import mark_boundaries
 #from lime.lime_image import *
 from lime import lime_image
+import csv
+from lime import calculate_posteriors
 print('Notebook run using keras:', keras.__version__)
 
 #Here we create a standard InceptionV3 pretrained model 
@@ -35,7 +37,7 @@ def transform_img_fn(path_list):
     return np.vstack(out)
 
 
-images = transform_img_fn([os.path.join('data','1.jpg')])
+images = transform_img_fn([os.path.join('data','5.jpg')])
 # I'm dividing by 2 and adding 0.5 because of
 # how this Inception represents images
 plt.imshow(images[0] / 2 + 0.5)
@@ -53,7 +55,7 @@ explainer = lime_image.LimeImageExplainer(feature_selection='none')#kernel_width
 # Hide color is the color for a superpixel turned OFF. Alternatively, if it is NONE, the superpixel will be replaced by the average of its pixels
 explanation = explainer.explain_instance(images[0], inet_model.predict,
                                          top_labels=3, hide_color=0, batch_size=10,
-                                         num_samples=100,model_regressor='Bay_non_info_prior')#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior'
+                                         num_samples=100,model_regressor='Bay_info_prior')#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior','BayesianRidge_inf_prior_fit_alpha'
 
 # temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=True, num_features=2, hide_rest=True)
 # plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
@@ -66,15 +68,27 @@ explanation = explainer.explain_instance(images[0], inet_model.predict,
 temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=False, num_features=5, hide_rest=False)
 plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
 plt.show()
+#print(explanation.as_list(explanation.top_labels[0]))
 
-# temp, mask = explanation.get_image_and_mask(explanation.top_labels[4], positive_only=True, num_features=2, hide_rest=True)
-# plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
-# plt.show()
 
-# temp, mask = explanation.get_image_and_mask(explanation.top_labels[4], positive_only=True, num_features=5, hide_rest=False)
-# plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
-# plt.show()
+alpha_init=1
+lambda_init=1
+with open('./posterior_configure.csv') as csv_file:
+    csv_reader=csv.reader(csv_file)
+    line_count = 0
+    for row in csv_reader:
+        if line_count == 1:
+            alpha_init=float(row[0])
+            lambda_init=float(row[1])
+        line_count=line_count+1
 
-# temp, mask = explanation.get_image_and_mask(explanation.top_labels[4], positive_only=False, num_features=10, hide_rest=False)
-# plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
-# plt.show()
+explanation=calculate_posteriors.get_posterior(explanation,'.\data\prior_knowledge_5_jpg.csv' ,hyper_para_alpha=alpha_init, hyper_para_lambda=lambda_init,
+                                        label=explanation.top_labels[0])
+
+
+
+temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=False, num_features=5, hide_rest=False)
+plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
+plt.show()
+
+

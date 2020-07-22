@@ -9,7 +9,7 @@ import pandas as pd
 import numpy as np
 
 # this function will be relocated to somefile... 
-def get_posterior(exp, hyper_para_alpha, hyper_para_lambda,label=1):
+def get_posterior(exp,prior_knowledge_path, hyper_para_alpha, hyper_para_lambda,label=1):
     '''
     Added by XZ to calculate posteriors when mu0 is non zero
     Parameters
@@ -24,7 +24,7 @@ def get_posterior(exp, hyper_para_alpha, hyper_para_lambda,label=1):
 
     '''
     #read from the prior knowledge repo
-    w=pd.read_csv(r'.\data\prior_knowledge.csv')
+    w=pd.read_csv(prior_knowledge_path)
    
     
     feature_name_list = exp.as_list(label=label)

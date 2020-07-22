@@ -88,6 +88,23 @@ class ImageExplanation(object):
                 print('The mean of the (posterior) coefficient {0}'.format(w))
                 print('The variance of the (posterior) coefficient {0}'.format(variance))
             return temp, mask
+    
+    
+    #Added by XZ
+    def as_list(self, label):
+        """ 
+        Added by XZ
+        
+        Returns the explanation as a list.
+
+
+        Returns:
+            list of tuples (representation, weight), where representation is
+            given by domain_mapper. Weight is a float.
+        """
+        exp = self.local_exp[label]
+        ans = [(str(x[0]), float(x[1])) for x in exp]
+        return ans
 
 
 class LimeImageExplainer(object):

@@ -2,7 +2,7 @@
 """
 Created on Mon Jun  8 09:37:59 2020
 
-@author: Xingyu Zhao
+@author: XZ
 """
 
 from sklearn.datasets import load_boston,load_breast_cancer
@@ -90,11 +90,11 @@ with open('./posterior_configure.csv') as csv_file:
             lambda_init=float(row[1])
         line_count=line_count+1
 
-exp=calculate_posteriors.get_posterior(exp,hyper_para_alpha=alpha_init, hyper_para_lambda=lambda_init,
+exp=calculate_posteriors.get_posterior(exp,'.\data\prior_knowledge_tabular.csv' ,hyper_para_alpha=alpha_init, hyper_para_lambda=lambda_init,
                                         label=1)
 
 #exp.show_in_notebook(show_table=True)
-#print(exp.as_list())
+print(exp.as_list())
 fig = exp.as_pyplot_figure(label=1)
 
 

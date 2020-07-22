@@ -1,8 +1,0 @@
-1. for a good explanation of LIME: 
-	1.1. both Bay_info_prior and Bay_non_info_prior did good as well.
-	1.2. Can Bay_info_prior make things worse by setting wrong priors? (seems no, but the varaince becomes quite large)
-	1.3. In Bay_non_info_prior, both precisition parameters (alpha, lambda) are very big. And the  label with higher confidence, the larger precisition parameters.
-
-2. the term lambda/alpha is the quatradtic regulation term
-	2.1. when lambda -> 0, then it becomes MLE.
-	2.2. when lambda/alpha>>0 then it penalties the mean weights a lot... we can see this.. But it seems without the change of the order of the means..

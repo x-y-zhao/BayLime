@@ -171,6 +171,7 @@ class LimeBase(object):
                 XZ: change default to 'non_Bay'
                 'Bay_non_info_prior' uses sklearn BayesianRidge
                 'Bay_info_prior' uses XZ modified sklearn BayesianRidge
+                'BayesianRidge_inf_prior_fit_alpha' uses XZ modifed 'BayesianRidge_inf_prior_fit_alpha' regressor
 
         Returns:
             (intercept, exp, score, local_pred):
@@ -260,6 +261,7 @@ class LimeBase(object):
             print('the lambda is',easy_model.lambda_)
             print('the regulation term lambda/alpha is', easy_model.lambda_/easy_model.alpha_)
             local_pred, local_std = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1),return_std=True)
+            # Added by XZ: write the posteriors into a local file...
             with open('./posterior_configure.csv','w',newline='') as result_file:
                 wr = csv.writer(result_file,delimiter=',')
                 wr.writerows([['alpha','lambda']])
