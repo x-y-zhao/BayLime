@@ -205,7 +205,7 @@ class LimeImageExplainer(object):
             raise e
         
         #Added by XZ, show all the segments
-        print('the number of features: {0}'.format(np.amax(segments)))
+        print('the number of features: {0}'.format(np.amax(segments)+1))
         plt.imshow(mark_boundaries(image / 2 + 0.5, segments))
         plt.show()
         #End

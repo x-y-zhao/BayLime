@@ -21,11 +21,11 @@ import csv
 
 #load example dataset
 boston = load_boston()
-#cancer= load_breast_cancer()
+cancer= load_breast_cancer()
 
 #print a description of the variables
 print(boston.DESCR)
-#print(cancer.DESCR)
+print(cancer.DESCR)
 
 #train a regressor
 rf = sklearn.ensemble.RandomForestRegressor(n_estimators=1000)
@@ -63,7 +63,7 @@ exp = explainer.explain_instance(test[i], rf.predict,#num_features=13,
                                  model_regressor='Bay_non_info_prior',
                                  num_samples=100,
                                  #labels=labels_test[i],
-                                 )#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior'
+                                 )#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior' 'BayesianRidge_inf_prior_fit_alpha'
 
 exp.show_in_notebook(show_table=True)
 fig = exp.as_pyplot_figure(label=1)

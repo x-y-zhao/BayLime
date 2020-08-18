@@ -91,4 +91,5 @@ temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_
 plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
 plt.show()
 
-
+print("**")
+print(explanation.as_list(explanation.top_labels[0]))
