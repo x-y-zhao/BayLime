@@ -1,5 +1,4 @@
 # BayLIME
-This is an anonymous website for our AAAI2021 submission.
 
 BayLIME is a Bayesian modification of LIME that provides a principled mechanism to combine useful knowledge (e.g., from other diverse XAI methods, embedded human knowledge in the training of the AI/ML model under explanation or simply previous explanations of similar instances), which is a clear trend in AI. Such combination benefits the consistency in repeated explanations of a single prediction, robustness to kernel settings and may also improve the efficiency by requiring less queries made to the AI/ML model.
 
@@ -14,7 +13,7 @@ print(linear_model.__file__)
 
 ## Repository Structure
 
-* **AAAI21_experiments** contains the experiments for the AAAI submission, in which you may find both the code (in Python jupyter-notebook) and the original data generated (stored as HTML and .csv files).
+* **experiments** contains the experiments for the AAAI submission, in which you may find both the code (in Python jupyter-notebook) and the original data generated (stored as HTML and .csv files).
 * **lime**, all source-code of BayLIME that modifies the original LIME source-code can be found in this folder.
 * **data** contains some data, e.g., images and tabular dataset.
 
