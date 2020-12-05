@@ -29,4 +29,4 @@ Now when calling the explainer.explain_instance() API of BayLime, we have four o
 3. model_regressor='Bay_info_prior' uses the modified sklearn BayesianRidge regressor and reads the hyperparameters alpha and lambda from configuration files, 
 4. model_regressor='BayesianRidge_inf_prior_fit_alpha' uses the modified BayesianRidge regressor and reads the hyperparameters lambda from configuration files and fit alpha from sampling data.
 
-Please refer to the tutorials for details.
+Please refer to the tutorials (e.g., BayLIME_tutorial_images.ipynb)  for details.
