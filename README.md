@@ -13,7 +13,7 @@ print(linear_model.__file__)
 
 ## Repository Structure
 
-* **experiments** contains the experiments for the AAAI submission, in which you may find both the code (in Python jupyter-notebook) and the original data generated (stored as HTML and .csv files).
+* **experiments** contains the experiments for the draft paper, in which you may find both the code (in Python jupyter-notebook) and the original data generated (stored as HTML and .csv files).
 * **lime**, all source-code of BayLIME that modifies the original LIME source-code can be found in this folder.
 * **data** contains some data, e.g., images and tabular dataset.
 
