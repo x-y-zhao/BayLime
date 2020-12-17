@@ -9,7 +9,7 @@ BayLIME is a Bayesian modification of LIME that provides a principled mechanism 
 from sklearn import linear_model
 print(linear_model.__file__)
 ```
-(Tested with Python version 3.7.3 and scikit-learn version 0.22.1)
+(Tested with Python version 3.7.3, scikit-learn version 0.22.1, Tensorflow version 2.0.0)
 
 ## Repository Structure
 
