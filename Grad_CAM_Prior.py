@@ -2,12 +2,13 @@ import os
 import tensorflow.keras
 from tensorflow.keras.applications import inception_v3 as inc_net
 from tensorflow.keras.preprocessing import image
-from keras.applications.imagenet_utils import decode_predictions
+from tensorflow.keras.applications.imagenet_utils import decode_predictions
 import matplotlib.pyplot as plt
 import numpy as np
 from skimage.segmentation import mark_boundaries
 from lime import lime_image
 from lime import Grad_CAM
+from lime import evaluation
 import csv
 from lime import calculate_posteriors
 print('Notebook run using keras:', tensorflow.keras.__version__)
@@ -31,21 +32,23 @@ def transform_img_fn(path_list):
     return np.vstack(out)
 
 
-images = transform_img_fn([os.path.join('data','frog.jpg')])
+images = transform_img_fn([os.path.join('data','5.jpg')])
 
 # I'm dividing by 2 and adding 0.5 because of
 # how this Inception represents images
+
 plt.imshow(images[0] / 2 + 0.5)
 plt.show()
 preds = inet_model.predict(images)
-for x in decode_predictions(preds)[0]:
-    print(x)
+pred_label = decode_predictions(preds)[0]
+# for x in decode_predictions(preds)[0]:
+#     print(x)
 
 explainer = lime_image.LimeImageExplainer(feature_selection='none')#kernel_width=0.1
 
 explanation = explainer.explain_instance(images[0], inet_model.predict,
-                                         top_labels=1, hide_color=0, batch_size=10,
-                                         num_samples=2000,model_regressor='BayesianRidge_inf_prior_fit_alpha')
+                                         top_labels=1, hide_color=0, batch_size=15,
+                                         num_samples=100,model_regressor='Bay_info_prior')
 #'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior','BayesianRidge_inf_prior_fit_alpha'
 
 
@@ -53,6 +56,7 @@ explanation = explainer.explain_instance(images[0], inet_model.predict,
 prior_knowledge = Grad_CAM.extrat_prior(images,inet_model,explanation)
 
 
+# update the explanation with prior
 alpha_var=1
 lambda_var=2048
 
@@ -61,7 +65,14 @@ explanation=calculate_posteriors.get_posterior(explanation,prior_knowledge,
                                                hyper_para_lambda=lambda_var,
                                                label=explanation.top_labels[0])
 
+deletion = evaluation.CausalMetric(inet_model,'del')
+insertion = evaluation.CausalMetric(inet_model,'ins')
+h = deletion.single_run(images[0], explanation, pred_label)
+h = insertion.single_run(images[0], explanation, pred_label)
+
 temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=False, num_features=5, hide_rest=False)
+
+
 plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
 plt.show()
 
