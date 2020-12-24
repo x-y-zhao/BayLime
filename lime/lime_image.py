@@ -198,17 +198,17 @@ class LimeImageExplainer(object):
         if segmentation_fn is None:
             segmentation_fn = SegmentationAlgorithm('slic', kernel_size=4,
                                                     max_dist=200, ratio=0.2,
-                                                    random_seed=random_seed)#XZ adde in n_segments=30
+                                                    random_seed=random_seed)#XZ adde in n_segments=30 n
         try:
             segments = segmentation_fn(image)
         except ValueError as e:
             raise e
         
-        #Added by XZ, show all the segments
-        print('the number of features: {0}'.format(np.amax(segments)+1))
-        plt.imshow(mark_boundaries(image / 2 + 0.5, segments))
-        plt.show()
-        #End
+        # #Added by XZ, show all the segments
+        # print('the number of features: {0}'.format(np.amax(segments)+1))
+        # plt.imshow(mark_boundaries(image / 2 + 0.5, segments))
+        # plt.show()
+        # #End
         
         fudged_image = image.copy()
         if hide_color is None:

@@ -57,7 +57,7 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name, classifier_laye
 
 
 # Grad-Cam as prior knowledge
-def extrat_prior(images,inet_model,explanation):
+def extrat_prior(img,inet_model,explanation):
     # model parameters
     last_conv_layer_name = "mixed10"
     classifier_layer_names = [
@@ -65,10 +65,10 @@ def extrat_prior(images,inet_model,explanation):
         "predictions",
     ]
 
-    grad, heatmap = make_gradcam_heatmap(images, inet_model, last_conv_layer_name, classifier_layer_names)
+    img = np.array([img])
+    grad, heatmap = make_gradcam_heatmap(img, inet_model, last_conv_layer_name, classifier_layer_names)
 
-
-    img = images[0] / 2 + 0.5
+    img = img[0] / 2 + 0.5
     img = np.uint8(255 * img)
 
     # We rescale heatmap to a range 0-255
@@ -89,8 +89,8 @@ def extrat_prior(images,inet_model,explanation):
     superimposed_img = jet_heatmap * 0.4 + img
     superimposed_img = image.array_to_img(superimposed_img)
 
-    plt.imshow(superimposed_img)
-    plt.show()
+    # plt.imshow(superimposed_img)
+    # plt.show()
 
     # resize gradmap to image size
     z = img.shape[0] / grad.shape[0]

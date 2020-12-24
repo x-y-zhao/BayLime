@@ -25,7 +25,7 @@ class CausalMetric():
         self.model = model
         self.mode = mode
 
-    def single_run(self, org_img, explanation, preds_label):
+    def single_run(self, org_img, exp, seg, pred_n, preds_label, exp_name):
         r"""Run metric on one image-saliency pair.
 
         Args:
@@ -37,9 +37,8 @@ class CausalMetric():
             scores (nd.array): Array containing scores at every step.
         """
         img = deepcopy(org_img)
-        pred_label = explanation.top_labels[0]
         # get feature importance of each segment
-        salient_order = deepcopy(explanation.local_exp[pred_label])
+        salient_order = deepcopy(exp)
 
         n_steps = len(salient_order)
         scores = np.zeros(n_steps)
@@ -49,41 +48,44 @@ class CausalMetric():
             xlabel = 'Segments of pixels deleted'
             for i in range(n_steps):
                 pred = self.model.predict(np.array([img]))
-                scores[i] = pred[0, pred_label]
+                scores[i] = pred[0, pred_n]
                 # delete the segment
-                seg_id = salient_order[i][0]
-                img[explanation.segments == seg_id] = 0
+                if exp_name == 'Grad_CAM':
+                    seg_id = salient_order[i]
+                else:
+                    seg_id = salient_order[i][0]
+                img[seg == seg_id] = -1.0
 
         elif self.mode == 'ins':
             title = 'Insertion game'
             xlabel = 'Segments of pixels inserted'
             # create a blurred image
-            blur_img = gaussian_filter(img / 2 + 0.5, sigma=5)
+            blur_img = gaussian_filter(img / 2 + 0.5, sigma=10)
             blur_img = (blur_img - 0.5)*2
 
-            plt.imshow(blur_img / 2 + 0.5)
-            plt.show()
 
             for i in range(n_steps):
                 pred = self.model.predict(np.array([blur_img]))
-                scores[i] = pred[0, pred_label]
+                scores[i] = pred[0, pred_n]
                 # insert the segment
-                seg_id = salient_order[i][0]
-                blur_img[explanation.segments == seg_id] = img[explanation.segments == seg_id]
+                if exp_name == 'Grad_CAM':
+                    seg_id = salient_order[i]
+                else:
+                    seg_id = salient_order[i][0]
+                blur_img[seg == seg_id] = img[seg == seg_id]
 
-            plt.imshow(blur_img / 2 + 0.5)
-            plt.show()
 
 
-        plt.figure(figsize=(5, 5))
-        plt.plot(np.arange(n_steps) / n_steps, scores)
-        plt.fill_between(np.arange(n_steps) / n_steps, 0, scores, alpha=0.4)
-        plt.xlim(-0.1, 1.1)
-        plt.ylim(0, max(scores)+0.1)
-        plt.title(title)
-        plt.xlabel(xlabel)
-        plt.ylabel(preds_label[0][1])
-        plt.show()
+        # plt.figure(figsize=(5, 5))
+        # plt.plot(np.arange(n_steps) / n_steps, scores)
+        # plt.fill_between(np.arange(n_steps) / n_steps, 0, scores, alpha=0.4)
+        # plt.xlim(-0.1, 1.1)
+        # plt.ylim(0, max(scores)+0.1)
+        # plt.text(0.5, 0.5, ' AUC: ' + str(round(auc(scores),6)), ha="center", va="center", zorder=10)
+        # plt.title( exp_name + '_' + title)
+        # plt.xlabel(xlabel)
+        # plt.ylabel(preds_label[0][1])
+        # plt.show()
 
 
         return auc(scores)

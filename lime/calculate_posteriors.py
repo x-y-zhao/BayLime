@@ -31,13 +31,19 @@ def get_posterior(exp,prior_knowledge, hyper_para_alpha, hyper_para_lambda,label
     
     temp_list=[feature_id_list[i]+feature_name_list[i] for i in range(0, len(feature_id_list))]
 
-    # min-max scale prior knowledge
+    # max-abs scale prior knowledge
     ob = [float(x[1]) for x in exp.local_exp[label]]
-    ob_max = max(ob)
-    ob_min = min(ob)
-    pr_max = max(prior_knowledge)
-    pr_min = min(prior_knowledge)
-    pr = (prior_knowledge-pr_min)/(pr_max-pr_min)*(ob_max-ob_min)+ob_min
+    ob_abs_max = max(abs(np.array(ob)))
+    pr_abs_max = max(abs(np.array(prior_knowledge)))
+    pr = prior_knowledge/pr_abs_max*ob_abs_max
+
+    # min-max scale
+    # ob_max = max(ob)
+    # ob_min = min(ob)
+    # pr_max = max(prior_knowledge)
+    # pr_min = min(prior_knowledge)
+    # pr = (prior_knowledge-pr_min)/(pr_max-pr_min)*(ob_max-ob_min)+ob_min
+
     
     # two new lists of tuple
     #new_list_with_feature_names=[]
