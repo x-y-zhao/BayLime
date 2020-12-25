@@ -1,4 +1,6 @@
 import os
+import time
+import shutil
 from os import listdir
 from os.path import isfile, join
 import tensorflow.keras
@@ -8,6 +10,7 @@ from tensorflow.keras.applications.imagenet_utils import decode_predictions
 import matplotlib.pyplot as plt
 import numpy as np
 from skimage.segmentation import mark_boundaries
+from lime.utils.record import record, writeInfo
 from lime import lime_image
 from lime import Grad_CAM
 from lime import evaluation
@@ -19,9 +22,14 @@ print('Notebook run using keras:', tensorflow.keras.__version__)
 ############################################################
 # use heatmap from Grad-CAM as prior knowledge for BayLime #
 ############################################################
-
-# import model trained with imagenet
-inet_model = inc_net.InceptionV3(weights='imagenet')
+# some necessary functions
+def mkdir(path):
+    folder = os.path.exists(path)
+    if not folder:
+        os.makedirs(path)
+    else:
+        shutil.rmtree(path)
+        os.mkdir(path)
 
 def transform_img_fn(path_list):
     out = []
@@ -33,6 +41,14 @@ def transform_img_fn(path_list):
         out.append(x)
     return np.vstack(out)
 
+############################################################
+
+# import model trained with imagenet
+inet_model = inc_net.InceptionV3(weights='imagenet')
+
+# set record file
+mkdir('evaluation_output')
+r = record('evaluation_output/record.txt',time.time())
 
 # import imagenet data from file
 dataset_path = 'data/ILSVRC2012_img_val'
@@ -61,18 +77,27 @@ del_gcam = []
 ins_blime = []
 del_blime = []
 
-for i in range(10):
+for i in range(5):
+
+    print("---------------------")
+    print('Image No. ', i)
+    print("---------------------")
     explanation = explainer.explain_instance(images[i], inet_model.predict,
                                             top_labels=1, hide_color=0, batch_size=15,
                                             num_samples=100, model_regressor='Bay_info_prior')
     #'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior','BayesianRidge_inf_prior_fit_alpha'
 
+    # create folder to save output file
+    fname = "evaluation_output/image_" + str(i)
+    mkdir(fname)
 
-    h_del = deletion.single_run(images[i], explanation.local_exp[explanation.top_labels[0]], explanation.segments, explanation.top_labels[0], pred_label[i], 'Lime')
-    h_ins = insertion.single_run(images[i], explanation.local_exp[explanation.top_labels[0]], explanation.segments, explanation.top_labels[0], pred_label[i], 'Lime')
+    h1_del = deletion.single_run(images[i], explanation.local_exp[explanation.top_labels[0]], explanation.segments, explanation.top_labels[0], pred_label[i], 'Lime',fname)
+    h1_ins = insertion.single_run(images[i], explanation.local_exp[explanation.top_labels[0]], explanation.segments, explanation.top_labels[0], pred_label[i], 'Lime',fname)
 
-    ins_lime.append(h_ins)
-    del_lime.append(h_del)
+    ins_lime.append(h1_ins)
+    del_lime.append(h1_del)
+
+    lime_eval = h1_ins - h1_del
 
     # extract the prior knowledge from grad-cam
     prior_knowledge = Grad_CAM.extrat_prior(images[i],inet_model,explanation)
@@ -80,16 +105,22 @@ for i in range(10):
     seg = explanation.segments
 
 
-    h_del = deletion.single_run(images[i], prior_exp, seg, explanation.top_labels[0], pred_label[i], 'Grad_CAM')
-    h_ins = insertion.single_run(images[i], prior_exp, seg, explanation.top_labels[0], pred_label[i], 'Grad_CAM')
+    h2_del = deletion.single_run(images[i], prior_exp, seg, explanation.top_labels[0], pred_label[i], 'Grad_CAM',fname)
+    h2_ins = insertion.single_run(images[i], prior_exp, seg, explanation.top_labels[0], pred_label[i], 'Grad_CAM',fname)
 
-    ins_gcam.append(h_ins)
-    del_gcam.append(h_del)
+    ins_gcam.append(h2_ins)
+    del_gcam.append(h2_del)
+
+    gcam_eval = h2_ins - h2_del
 
 
     # update the explanation with prior
+    # dynamicly adjust lambda_var
     alpha_var=1
-    lambda_var=5
+    if gcam_eval > lime_eval:
+        lambda_var = 2048
+    else:
+        lambda_var = 5
 
     explanation=calculate_posteriors.get_posterior(explanation,prior_knowledge,
                                                 hyper_para_alpha=alpha_var,
@@ -97,19 +128,24 @@ for i in range(10):
                                                 label=explanation.top_labels[0])
 
 
-    h_del = deletion.single_run(images[i], explanation.local_exp[explanation.top_labels[0]], explanation.segments, explanation.top_labels[0], pred_label[i], 'BayLime')
-    h_ins = insertion.single_run(images[i], explanation.local_exp[explanation.top_labels[0]], explanation.segments, explanation.top_labels[0], pred_label[i], 'BayLime')
+    h3_del = deletion.single_run(images[i], explanation.local_exp[explanation.top_labels[0]], explanation.segments, explanation.top_labels[0], pred_label[i], 'BayLime',fname)
+    h3_ins = insertion.single_run(images[i], explanation.local_exp[explanation.top_labels[0]], explanation.segments, explanation.top_labels[0], pred_label[i], 'BayLime',fname)
 
-    ins_blime.append(h_ins)
-    del_blime.append(h_del)
+    ins_blime.append(h3_ins)
+    del_blime.append(h3_del)
 
-print('Lime deletion: ', np.mean(del_lime))
-print('Lime insertion: ', np.mean(ins_lime))
-print('Grad-CAM deletion: ', np.mean(del_gcam))
-print('Grad-CAM insertion: ', np.mean(ins_gcam))
-print('Baylime deletion: ', np.mean(del_blime))
-print('Baylime insertion: ', np.mean(ins_blime))
+    writeInfo(r, i, h1_del, h1_ins, h2_del, h2_ins, h3_del, h3_ins)
 
+    print("---------------------")
+    print('Lime deletion: ', np.mean(del_lime))
+    print('Lime insertion: ', np.mean(ins_lime))
+    print('Grad-CAM deletion: ', np.mean(del_gcam))
+    print('Grad-CAM insertion: ', np.mean(ins_gcam))
+    print('Baylime deletion: ', np.mean(del_blime))
+    print('Baylime insertion: ', np.mean(ins_blime))
+    print("---------------------")
+
+r.close()
 
 # temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=False, num_features=5, hide_rest=False)
 # plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))

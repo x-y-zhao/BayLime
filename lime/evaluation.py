@@ -1,4 +1,5 @@
 import numpy as np
+from os.path import join
 from scipy.ndimage.filters import gaussian_filter
 from copy import deepcopy
 import matplotlib.pyplot as plt
@@ -25,7 +26,7 @@ class CausalMetric():
         self.model = model
         self.mode = mode
 
-    def single_run(self, org_img, exp, seg, pred_n, preds_label, exp_name):
+    def single_run(self, org_img, exp, seg, pred_n, preds_label, exp_name, fname):
         r"""Run metric on one image-saliency pair.
 
         Args:
@@ -75,17 +76,17 @@ class CausalMetric():
                 blur_img[seg == seg_id] = img[seg == seg_id]
 
 
-
-        # plt.figure(figsize=(5, 5))
-        # plt.plot(np.arange(n_steps) / n_steps, scores)
-        # plt.fill_between(np.arange(n_steps) / n_steps, 0, scores, alpha=0.4)
-        # plt.xlim(-0.1, 1.1)
-        # plt.ylim(0, max(scores)+0.1)
-        # plt.text(0.5, 0.5, ' AUC: ' + str(round(auc(scores),6)), ha="center", va="center", zorder=10)
-        # plt.title( exp_name + '_' + title)
-        # plt.xlabel(xlabel)
-        # plt.ylabel(preds_label[0][1])
-        # plt.show()
+        f = exp_name + '_' + self.mode + '.png'
+        plt.figure(figsize=(5, 5))
+        plt.plot(np.arange(n_steps) / n_steps, scores)
+        plt.fill_between(np.arange(n_steps) / n_steps, 0, scores, alpha=0.4)
+        plt.xlim(-0.1, 1.1)
+        plt.ylim(0, max(scores)+0.1)
+        plt.text(0.5, (max(scores)+0.1)/2, ' AUC: ' + str(round(auc(scores),6)), ha="center", va="center", zorder=10)
+        plt.title( exp_name + '_' + title)
+        plt.xlabel(xlabel)
+        plt.ylabel(preds_label[0][1])
+        plt.savefig(join(fname, f))
 
 
         return auc(scores)
