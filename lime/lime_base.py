@@ -190,8 +190,8 @@ class LimeBase(object):
                                                weights,
                                                num_features,
                                                feature_selection)
-        if feature_selection== 'lasso_path':
-            print('By lasso_path for sparse samples, number of features used is {0}'.format(len(used_features)))
+        
+        print('To train the linear model, number of features used is {0}'.format(len(used_features)))
         
         
         if model_regressor == 'non_Bay':
