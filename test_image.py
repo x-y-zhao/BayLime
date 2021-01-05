@@ -57,7 +57,7 @@ explainer = lime_image.LimeImageExplainer(feature_selection='auto')#kernel_width
 # Hide color is the color for a superpixel turned OFF. Alternatively, if it is NONE, the superpixel will be replaced by the average of its pixels
 explanation = explainer.explain_instance(images[0], inet_model.predict,
                                          top_labels=1, hide_color=1, batch_size=10,num_features=5,
-                                         num_samples=100,model_regressor='Bay_non_info_prior')#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior','BayesianRidge_inf_prior_fit_alpha'
+                                         num_samples=20,model_regressor='BayesianRidge_inf_prior_fit_alpha')#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior','BayesianRidge_inf_prior_fit_alpha'
 
 temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=True, num_features=5, hide_rest=True)
 plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
