@@ -641,6 +641,10 @@ class BayesianRidge_inf_prior_fit_alpha(RegressorMixin, LinearModel):
             coef_, rmse_ = self._update_coef_(X, y, n_samples, n_features,
                                               XT_y, U, Vh, eigen_vals_,
                                               alpha_, lambda_)
+            #XZ: added by XZ
+            alpha_old=alpha_
+            lambda_old=lambda_
+            #end...
             if self.compute_score:
                 # compute the log marginal likelihood
                 s = self._log_marginal_likelihood(n_samples, n_features,
@@ -660,7 +664,7 @@ class BayesianRidge_inf_prior_fit_alpha(RegressorMixin, LinearModel):
                       (rmse_ + 2 * alpha_2))
 
             # Check for convergence
-            if iter_ != 0 and np.sum(np.abs(coef_old_ - coef_)) < self.tol:
+            if iter_ != 0 and np.sum(np.abs(coef_old_ - coef_)) < self.tol and np.abs(alpha_old-alpha_)<self.tol:
                 if verbose:
                     print("Convergence after ", str(iter_), " iterations")
                 break
