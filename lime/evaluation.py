@@ -51,7 +51,7 @@ class CausalMetric():
                 pred = self.model.predict(np.array([img]))
                 scores[i] = pred[0, pred_n]
                 # delete the segment
-                if exp_name == 'Grad_CAM':
+                if exp_name == 'Grad_CAM' or exp_name == 'SHAP':
                     seg_id = salient_order[i]
                 else:
                     seg_id = salient_order[i][0]
@@ -69,7 +69,7 @@ class CausalMetric():
                 pred = self.model.predict(np.array([blur_img]))
                 scores[i] = pred[0, pred_n]
                 # insert the segment
-                if exp_name == 'Grad_CAM':
+                if exp_name == 'Grad_CAM' or exp_name == 'SHAP':
                     seg_id = salient_order[i]
                 else:
                     seg_id = salient_order[i][0]
@@ -77,16 +77,16 @@ class CausalMetric():
 
 
         f = exp_name + '_' + self.mode + '.png'
-        plt.figure(figsize=(5, 5))
+        plt.figure(figsize=(6, 6))
         plt.plot(np.arange(n_steps) / n_steps, scores)
         plt.fill_between(np.arange(n_steps) / n_steps, 0, scores, alpha=0.4)
         plt.xlim(-0.1, 1.1)
         plt.ylim(0, max(scores)+0.1)
-        plt.text(0.5, (max(scores)+0.1)/2, ' AUC: ' + str(round(auc(scores),6)), ha="center", va="center", zorder=10)
+        plt.text(0.5, (max(scores)+0.1)/2, ' AUC: ' + str(round(auc(scores),6)), ha="center", va="center", zorder=10, fontsize = 20)
         plt.title( exp_name + '_' + title)
         plt.xlabel(xlabel)
         plt.ylabel(preds_label[0][1])
-        plt.savefig(join(fname, f))
+        plt.savefig(join(fname, f),bbox_inches='tight')
 
 
         return auc(scores)

@@ -28,7 +28,10 @@ class record:
 def writeInfo(r, i, h1_del, h1_ins, h2_del, h2_ins, h3_del, h3_ins):
     r.write("time:%s\n" % (time.time() - r.startTime))
     r.write('--------------------------\n')
-    r.write("No. of Image: %s\n" % (i))
+    if i == -1:
+        r.write("Calculate the mean value\n")
+    else:
+        r.write("No. of Image: %s\n" % (i))
     r.write("Lime Deletion: %.5f\n" % (h1_del))
     r.write("Lime Insertion: %.5f\n" % (h1_ins))
     r.write("Grad-CAM Deletion: %.5f\n" % (h2_del))
@@ -37,7 +40,20 @@ def writeInfo(r, i, h1_del, h1_ins, h2_del, h2_ins, h3_del, h3_ins):
     r.write("BayLime Insertion: %.5f\n" % (h3_ins))
     r.write('--------------------------\n')
     r.write('--------------------------\n')
-    r.close()
+
+def shap_writeInfo(r, i, h_del, h_ins):
+    r.write("time:%s\n" % (time.time() - r.startTime))
+    r.write('--------------------------\n')
+    if i == -1:
+        r.write("Calculate the mean value\n")
+    else:
+        r.write("No. of Image: %s\n" % (i))
+    r.write("Shap Deletion: %.5f\n" % (h_del))
+    r.write("Shap Insertion: %.5f\n" % (h_ins))
+    r.write('--------------------------\n')
+    r.write('--------------------------\n')
+
+
 
 
 
