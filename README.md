@@ -10,6 +10,10 @@ from sklearn import linear_model
 print(linear_model.__file__)
 ```
 (Tested with Python version 3.7.3, scikit-learn version 0.22.1, Tensorflow version 2.0.0)
+3. Download the necessary dataset for ImageNet and GTSRB model, unzip the files and move to the data folder.
+```
+Inset download link here
+```
 
 ## Repository Structure
 
@@ -30,3 +34,25 @@ Now when calling the explainer.explain_instance() API of BayLime, we have four o
 4. model_regressor='BayesianRidge_inf_prior_fit_alpha' uses the modified BayesianRidge regressor and reads the hyperparameters lambda from configuration files and fit alpha from sampling data.
 
 Please refer to the tutorials (e.g., BayLIME_tutorial_images.ipynb)  for details.
+
+## Embed Prior from GradCAM
+To get the explanation for specified image (e.g. king penguin) in data folder, firstly modify the image path in Line 46 of Grad_CAM_Prior.py, then type
+```
+python Grad_CAM_Prior.py
+```
+You will get the explanation results along with Deletion and Insertion AUC figures from GradCAM, LIME and BayLIME under the created evaluation_output folder.
+To get statistical fidelity evaluation on ImageNet dataset, firstly make sure the validation dataset from ImageNet called ILSVRC2012_img_val is already downloaded and moved to the data folder, then type
+```
+python del_ins_exp.py
+```
+You will the explanation result for each image from ImageNet and a record file for recording the runtime output in the created evaluation_output folder. Be cautious the evaluation_output folder will be reset every time running the program, so take a copy if you want to save the running results.
+
+## Embed Prior from Neural Cleanse
+In backdoor_exp.py, we provide the explanation for backdoor input from BadNet and TrojanAttack models. To get the IoU and AMD evaluation for Prior, LIME and BayLIME, type the command
+```
+python backdoor_exp.py
+```
+
+
+
+
