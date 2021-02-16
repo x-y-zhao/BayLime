@@ -12,7 +12,7 @@ print(linear_model.__file__)
 (Tested with Python version 3.7.3, scikit-learn version 0.22.1, Tensorflow version 2.0.0)
 3. Download the necessary dataset for ImageNet and GTSRB model, unzip the files and move to the data folder.
 ```
-Inset download link here
+Insert download link here
 ```
 
 ## Repository Structure
