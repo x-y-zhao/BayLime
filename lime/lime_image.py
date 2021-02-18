@@ -72,7 +72,7 @@ class ImageExplanation(object):
                   if x[1] < 0 and abs(x[1]) > min_weight][:num_features]
         if positive_only or negative_only:
             for f in fs:
-                temp[segments == f] = image[segments == f].copy()
+                temp[segments == f,1] = np.max(image)
                 mask[segments == f] = 1
             return temp, mask
         else:
@@ -84,9 +84,9 @@ class ImageExplanation(object):
                 temp[segments == f] = image[segments == f].copy()
                 temp[segments == f, c] = np.max(image)
                 ##added by xz to print out information
-                print('For feature of segment {0}'.format(f))
-                print('The mean of the (posterior) coefficient {0}'.format(w))
-                print('The variance of the (posterior) coefficient {0}'.format(variance))
+                # print('For feature of segment {0}'.format(f))
+                # print('The mean of the (posterior) coefficient {0}'.format(w))
+                # print('The variance of the (posterior) coefficient {0}'.format(variance))
             return temp, mask
     
     
@@ -195,20 +195,29 @@ class LimeImageExplainer(object):
         if random_seed is None:
             random_seed = self.random_state.randint(0, high=1000)
 
-        if segmentation_fn is None:
-            segmentation_fn = SegmentationAlgorithm('slic', kernel_size=4,
+        if segmentation_fn == 'block':
+            segments = np.zeros((image.shape[0],image.shape[1]),dtype=int)
+            for i in range(image.shape[0]):
+                for j in range(image.shape[1]):
+                    segments[i][j] = j//2 + i//2 * 16
+                    # segments[i][j] = j + i * 32
+
+        else:
+            if segmentation_fn is None:
+                segmentation_fn = SegmentationAlgorithm('slic', kernel_size=4,
                                                     max_dist=200, ratio=0.2,
-                                                    random_seed=random_seed)#XZ adde in n_segments=30
-        try:
-            segments = segmentation_fn(image)
-        except ValueError as e:
-            raise e
+                                                    random_seed=random_seed, n_segments=150)#XZ adde in n_segments=30 n
+            try:
+                segments = segmentation_fn(image)
+
+            except ValueError as e:
+                raise e
         
-        #Added by XZ, show all the segments
-        print('the number of features: {0}'.format(np.amax(segments)+1))
-        plt.imshow(mark_boundaries(image / 2 + 0.5, segments))
-        plt.show()
-        #End
+        # #Added by XZ, show all the segments
+        # print('the number of features: {0}'.format(np.amax(segments)+1))
+        # plt.imshow(mark_boundaries(image / 2 + 0.5, segments))
+        # plt.show()
+        # #End
         
         fudged_image = image.copy()
         if hide_color is None:

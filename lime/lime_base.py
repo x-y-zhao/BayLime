@@ -191,8 +191,6 @@ class LimeBase(object):
                                                num_features,
                                                feature_selection)
         
-        print('To train the linear model, number of features used is {0}'.format(len(used_features)))
-        
         
         if model_regressor == 'non_Bay':
             model_reg = Ridge(alpha=1,fit_intercept=True,random_state=self.random_state)

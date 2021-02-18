@@ -57,18 +57,27 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name, classifier_laye
 
 
 # Grad-Cam as prior knowledge
-def extrat_prior(images,inet_model,explanation):
+def extrat_prior(img,inet_model,explanation,fname,pred_l):
     # model parameters
     last_conv_layer_name = "mixed10"
     classifier_layer_names = [
-        "avg_pool",
-        "predictions",
+         "avg_pool",
+         "predictions",
     ]
+    # last_conv_layer_name = "conv5_block3_out"
+    # classifier_layer_names = [
+    #         "avg_pool",
+    #         "probs",
+    # ]
+    # last_conv_layer_name = "block14_sepconv2_act"
+    # classifier_layer_names = [
+    #     "avg_pool",
+    #     "predictions",
+    # ]
+    img = np.array([img])
+    grad, heatmap = make_gradcam_heatmap(img, inet_model, last_conv_layer_name, classifier_layer_names)
 
-    grad, heatmap = make_gradcam_heatmap(images, inet_model, last_conv_layer_name, classifier_layer_names)
-
-
-    img = images[0] / 2 + 0.5
+    img = img[0] / 2 + 0.5
     img = np.uint8(255 * img)
 
     # We rescale heatmap to a range 0-255
@@ -89,8 +98,12 @@ def extrat_prior(images,inet_model,explanation):
     superimposed_img = jet_heatmap * 0.4 + img
     superimposed_img = image.array_to_img(superimposed_img)
 
-    plt.imshow(superimposed_img)
-    plt.show()
+    fig, ax = plt.subplots(figsize=(6,6))
+    ax.imshow(superimposed_img)
+    ax.set_ylabel(pred_l,fontsize=20)
+    fig.savefig(fname+'/Grad_CAM_exp.png',bbox_inches='tight')
+    # plt.imshow(superimposed_img)
+    # plt.show()
 
     # resize gradmap to image size
     z = img.shape[0] / grad.shape[0]
