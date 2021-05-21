@@ -2,6 +2,10 @@
 
 BayLIME is a Bayesian modification of LIME that provides a principled mechanism to combine useful knowledge (e.g., from other diverse XAI methods, embedded human knowledge in the training of the AI/ML model under explanation or simply previous explanations of similar instances), which is a clear trend in AI. Such combination benefits the consistency in repeated explanations of a single prediction, robustness to kernel settings and may also improve the efficiency by requiring less queries made to the AI/ML model.
 
+## Publication
+
+The paper on BayLIME is accepted by UAI2021, here is the [accepted version](https://arxiv.org/pdf/2012.03058.pdf) on arXiv.
+
 ## Setup
 1. Copy-paste the modified_sklearn_BayesianRidge.py file (in the lime/utils folder on this repo) into your local sklearn.linear_model folder.
 2. To find out where the folder is, simply run:
