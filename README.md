@@ -7,18 +7,17 @@ BayLIME is a Bayesian modification of LIME (one of the most widely used approach
 The paper on BayLIME is accepted by UAI2021, here is the [accepted version](https://arxiv.org/pdf/2012.03058.pdf) on arXiv.
 
 ## Setup
-1. Copy-paste the modified_sklearn_BayesianRidge.py file (in the lime/utils folder on this repo) into your local sklearn.linear_model folder.
-2. To find out where the folder is, simply run:
+1. Copy-paste the modified_sklearn_BayesianRidge.py file (in the lime/utils folder on this repo) into your local sklearn.linear_model folder. To find out where the folder is, simply run:
 ```python
 from sklearn import linear_model
 print(linear_model.__file__)
 ```
-3. Download the necessary dataset for ImageNet and GTSRB model, unzip the files and move to the data folder.
+2. Download the necessary dataset for ImageNet and GTSRB model, unzip the files and move to the data folder.
 ```
 ImageNet (original images): http://image-net.org/download-images
 GTSRB (.h5 file): https://drive.google.com/file/d/1MjgsnH3bOYG_PvdvqmoamoCPmySQazRJ/view?usp=sharing
 ```
-(Tested with Python version 3.7.3, scikit-learn version 0.22.1, Tensorflow version 2.0.0)
+(Tested with Python version 3.7.3, **scikit-learn version 0.22.1**, Tensorflow version 2.0.0)
 ## Repository Structure
 
 * **experiments** contains the experiments for the draft paper, in which you may find both the code (in Python jupyter-notebook) and the original data generated (stored as HTML and .csv files).
