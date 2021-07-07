@@ -50,6 +50,10 @@ def get_posterior(exp,prior_knowledge, hyper_para_alpha, hyper_para_lambda,label
     new_list_with_feature_index=[]
     #print((temp_list))
     for x in temp_list:
+        if x[0]>=len(pr):#this is the case that our prior knowldege didn't cover all features..
+            t_=(hyper_para_lambda*x[2])*0+x[1]
+            new_list_with_feature_index.append((x[0],t_,x[2]))
+        else:
             t_=(hyper_para_lambda*x[2])*pr[x[0]]+x[1]
             new_list_with_feature_index.append((x[0],t_,x[2]))
     

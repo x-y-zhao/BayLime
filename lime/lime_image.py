@@ -84,9 +84,9 @@ class ImageExplanation(object):
                 temp[segments == f] = image[segments == f].copy()
                 temp[segments == f, c] = np.max(image)
                 ##added by xz to print out information
-                # print('For feature of segment {0}'.format(f))
-                # print('The mean of the (posterior) coefficient {0}'.format(w))
-                # print('The variance of the (posterior) coefficient {0}'.format(variance))
+                print('For feature of segment {0}'.format(f))
+                print('The mean of the (posterior) coefficient {0}'.format(w))
+                print('The variance of the (posterior) coefficient {0}'.format(variance))
             return temp, mask
     
     
@@ -213,11 +213,11 @@ class LimeImageExplainer(object):
             except ValueError as e:
                 raise e
         
-        # #Added by XZ, show all the segments
-        # print('the number of features: {0}'.format(np.amax(segments)+1))
-        # plt.imshow(mark_boundaries(image / 2 + 0.5, segments))
-        # plt.show()
-        # #End
+        #Added by XZ, show all the segments
+        print('the number of features: {0}'.format(np.amax(segments)+1))
+        plt.imshow(mark_boundaries(image / 2 + 0.5, segments))
+        plt.show()
+        #End
         
         fudged_image = image.copy()
         if hide_color is None:

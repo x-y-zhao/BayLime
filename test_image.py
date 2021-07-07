@@ -38,7 +38,7 @@ def transform_img_fn(path_list):
     return np.vstack(out)
 
 
-images = transform_img_fn([os.path.join('data','video_2.png')])
+images = transform_img_fn([os.path.join('data','5.jpg')])
 # I'm dividing by 2 and adding 0.5 because of
 # how this Inception represents images
 plt.imshow(images[0] / 2 + 0.5)
@@ -56,7 +56,7 @@ explainer = lime_image.LimeImageExplainer(feature_selection='none')#kernel_width
 # Hide color is the color for a superpixel turned OFF. Alternatively, if it is NONE, the superpixel will be replaced by the average of its pixels
 explanation = explainer.explain_instance(images[0], inet_model.predict,
                                          top_labels=3, hide_color=1, batch_size=10,
-                                         num_samples=100,model_regressor='non_Bay')#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior','BayesianRidge_inf_prior_fit_alpha'
+                                         num_samples=100,model_regressor='Bay_info_prior')#'non_Bay' 'Bay_non_info_prior' 'Bay_info_prior','BayesianRidge_inf_prior_fit_alpha'
 
 temp, mask = explanation.get_image_and_mask(explanation.top_labels[0], positive_only=True, num_features=5, hide_rest=True)
 plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
@@ -83,7 +83,11 @@ with open('./posterior_configure.csv') as csv_file:
             lambda_init=float(row[1])
         line_count=line_count+1
 
-explanation=calculate_posteriors.get_posterior(explanation,'.\data\prior_knowledge_5_jpg.csv' ,hyper_para_alpha=alpha_init, hyper_para_lambda=lambda_init,
+import pandas as pd
+pr=pd.read_csv('./data/prior_knowledge_5_jpg.csv').to_numpy()[0]
+print(pr)
+
+explanation=calculate_posteriors.get_posterior(explanation, pr ,hyper_para_alpha=alpha_init, hyper_para_lambda=lambda_init,
                                         label=explanation.top_labels[0])
 
 
