@@ -4,7 +4,7 @@ BayLIME is a Bayesian modification of [LIME](https://github.com/marcotcr/lime) (
 
 ## Publication
 
-The paper on BayLIME is accepted by UAI2021, here is the [accepted version](https://arxiv.org/pdf/2012.03058.pdf) on arXiv.
+The paper on BayLIME is accepted by UAI2021, here is the [accepted version](https://arxiv.org/pdf/2012.03058.pdf) on arXiv and a [recorded presentation](https://youtu.be/-ftJFNVxvOQ) for UAI'21.
 
 ## Setup
 1. Copy-paste the modified_sklearn_BayesianRidge.py file (in the lime/utils folder on this repo) into your local sklearn.linear_model folder. To find out where the folder is, simply run:
