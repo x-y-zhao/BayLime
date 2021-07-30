@@ -20,7 +20,7 @@ GTSRB (.h5 file): https://drive.google.com/file/d/1MjgsnH3bOYG_PvdvqmoamoCPmySQa
 (Tested with Python version 3.7.3, **scikit-learn version 0.22.1**, Tensorflow version 2.0.0)
 ## Repository Structure
 
-* **experiments** contains the experiments for the draft paper, in which you may find both the code (in Python jupyter-notebook) and the original data generated (stored as HTML and .csv files).
+* **experiments** contains the experiments of the paper, in which you may find both the code (in Python jupyter-notebook) and the original data generated (stored as HTML and .csv files).
 * **lime**, all source-code of BayLIME that modifies the original LIME source-code can be found in this folder.
 * **data** contains some data, e.g., images and tabular dataset.
 
@@ -36,22 +36,23 @@ Now when calling the explainer.explain_instance() API of BayLime, we have four o
 3. model_regressor='Bay_info_prior' uses the modified sklearn BayesianRidge regressor and reads the hyperparameters alpha and lambda from configuration files, 
 4. model_regressor='BayesianRidge_inf_prior_fit_alpha' uses the modified BayesianRidge regressor and reads the hyperparameters lambda from configuration files and fit alpha from sampling data.
 
-Please refer to the tutorials (e.g., BayLIME_tutorial_images.ipynb)  for details.
+Please refer to the tutorials (e.g., **BayLIME_tutorial_images.ipynb**)  for details.
 
 ## Embed Prior from GradCAM
-To get the explanation for specified image (e.g. king penguin) in data folder, firstly modify the image path in Line 46 of Grad_CAM_Prior.py, then type
+To get the explanation for a specific image (e.g. king penguin) in the data folder, firstly modify the image path in Line 46 of Grad_CAM_Prior.py, then type
 ```
 python Grad_CAM_Prior.py
 ```
 You will get the explanation results along with Deletion and Insertion AUC figures from GradCAM, LIME and BayLIME under the created *evaluation_output* folder.
-To get statistical fidelity evaluation on ImageNet dataset, firstly make sure the validation dataset from ImageNet called ILSVRC2012_img_val is already downloaded and moved to the data folder, then type
+
+To get statistical fidelity evaluation on ImageNet dataset, first please make sure the validation dataset from ImageNet called ILSVRC2012_img_val is already downloaded and moved to the data folder, then type
 ```
 python del_ins_exp.py
 ```
-You will the explanation result for each image from ImageNet and a record file for recording the runtime output in the created *evaluation_output* folder. Be cautious the evaluation_output folder will be reset every time running the program, so take a copy if you want to save the running results.
+You will get the explanation result for each image from ImageNet and a record file recording the runtime output in the created *evaluation_output* folder. Be cautious that the evaluation_output folder will be reset every time running the program, so take a copy if you want to save the results.
 
 ## Embed Prior from Neural Cleanse
-In backdoor_exp.py, we provide the explanation for backdoor input from BadNet and TrojanAttack models. To get the IoU and AMD evaluation for Prior, LIME and BayLIME, type the command
+In backdoor_exp.py, we provide the explanations for backdoor inputs based on BadNet and TrojanAttack models. To get the IoU and AMD evaluations for the Prior, LIME and BayLIME, type the command
 ```
 python backdoor_exp.py
 ```
