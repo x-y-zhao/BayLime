@@ -26,7 +26,7 @@ from ._base import LinearModel, _rescale_data
 from ..base import RegressorMixin
 from ..utils.extmath import fast_logdet
 from ..utils import check_X_y
-from ..utils.fixes import pinvh
+from ..utils.fixes import scipy.linalg.pinvh
 from ..utils.validation import _check_sample_weight
 
 
@@ -981,7 +981,7 @@ class ARDRegression(RegressorMixin, LinearModel):
 
         # Compute sigma and mu (using Woodbury matrix identity)
         def update_sigma(X, alpha_, lambda_, keep_lambda, n_samples):
-            sigma_ = pinvh(np.eye(n_samples) / alpha_ +
+            sigma_ = scipy.linalg.pinvh(np.eye(n_samples) / alpha_ +
                            np.dot(X[:, keep_lambda] *
                            np.reshape(1. / lambda_[keep_lambda], [1, -1]),
                            X[:, keep_lambda].T))
